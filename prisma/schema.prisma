@@ -1,0 +1,111 @@
+// Personal FinTech / Expense Platform — data model
+// SQLite by default (zero-config, file-based). Swap the datasource to
+// postgresql and set DATABASE_URL to move to Postgres for production.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum RecurrenceFrequency {
+  DAILY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  YEARLY
+}
+
+enum AlertSeverity {
+  INFO
+  WARNING
+  CRITICAL
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  color     String   @default("#1F5B4C")
+  icon      String   @default("circle")
+  isSystem  Boolean  @default(false)
+  keywords  String   @default("") // comma-separated keywords used for auto-categorization
+  createdAt DateTime @default(now())
+
+  transactions Transaction[]
+  budgets      Budget[]
+  recurring    RecurringExpense[]
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  date        DateTime
+  description String
+  merchant    String?
+  amount      Float // always positive; sign is derived from `type`
+  type        TransactionType @default(EXPENSE)
+  notes       String?
+  source      String          @default("manual") // manual | csv-import | recurring
+  importBatch String? // groups rows from the same CSV import for undo/audit
+  categoryId  String?
+  category    Category?       @relation(fields: [categoryId], references: [id])
+  recurringId String?
+  recurring   RecurringExpense? @relation(fields: [recurringId], references: [id])
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([date])
+  @@index([categoryId])
+  @@index([importBatch])
+}
+
+model Budget {
+  id          String   @id @default(cuid())
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  monthlyLimit Float
+  rollover    Boolean  @default(false)
+  alertAt     Int      @default(80) // percent of limit that triggers a WARNING alert
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([categoryId])
+}
+
+model RecurringExpense {
+  id          String               @id @default(cuid())
+  name        String
+  amount      Float
+  type        TransactionType      @default(EXPENSE)
+  categoryId  String?
+  category    Category?            @relation(fields: [categoryId], references: [id])
+  frequency   RecurrenceFrequency
+  startDate   DateTime
+  endDate     DateTime?
+  nextRunDate DateTime
+  lastRunDate DateTime?
+  isActive    Boolean              @default(true)
+  notes       String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  transactions Transaction[]
+}
+
+model Alert {
+  id         String        @id @default(cuid())
+  severity   AlertSeverity @default(INFO)
+  title      String
+  message    String
+  isRead     Boolean       @default(false)
+  entityType String? // "budget" | "transaction" | "recurring"
+  entityId   String?
+  createdAt  DateTime      @default(now())
+}
