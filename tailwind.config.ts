@@ -5,10 +5,6 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Dark + blue theme. Token names stay the same across the app
-        // (ink = text, paper = page bg, panel = card bg, moss = primary/
-        // positive accent, rust = negative/critical, gold = warning) —
-        // only the values changed, so every component restyles for free.
         ink: '#E8EDF7',
         paper: '#080C16',
         panel: '#101828',

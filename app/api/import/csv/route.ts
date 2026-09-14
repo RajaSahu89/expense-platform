@@ -38,9 +38,6 @@ export async function POST(req: NextRequest) {
     }
 
     const fingerprints = rows.map((r) => r.fingerprint);
-    // We store the fingerprint in `notes` prefixed with a marker so we can
-    // detect duplicates without a schema migration; a production build
-    // would add a dedicated indexed column instead.
     const existing = await prisma.transaction.findMany({
       where: { notes: { in: fingerprints.map((f) => `fp:${f}`) } },
       select: { notes: true },

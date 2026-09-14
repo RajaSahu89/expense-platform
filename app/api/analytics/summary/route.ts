@@ -4,7 +4,7 @@ import { startOfMonth, endOfMonth } from 'date-fns';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const monthParam = searchParams.get('month'); // YYYY-MM
+  const monthParam = searchParams.get('month');
   const reference = monthParam ? new Date(`${monthParam}-01`) : new Date();
   const monthStart = startOfMonth(reference);
   const monthEnd = endOfMonth(reference);
