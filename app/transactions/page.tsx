@@ -42,7 +42,7 @@ export default function TransactionsPage() {
   }, [search, categoryFilter, typeFilter]);
 
   useEffect(() => {
-    const t = setTimeout(load, 250); // debounce search/filter changes
+    const t = setTimeout(load, 250);
     return () => clearTimeout(t);
   }, [load]);
 
