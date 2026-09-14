@@ -49,7 +49,7 @@ model Transaction {
   type        TransactionType @default(EXPENSE)
   notes       String?
   source      String          @default("manual") 
-  importBatch String? // groups rows from the same CSV import for undo/audit
+  importBatch String?
   categoryId  String?
   category    Category?       @relation(fields: [categoryId], references: [id])
   recurringId String?
@@ -68,7 +68,7 @@ model Budget {
   category    Category @relation(fields: [categoryId], references: [id])
   monthlyLimit Float
   rollover    Boolean  @default(false)
-  alertAt     Int      @default(80) // percent of limit that triggers a WARNING alert
+  alertAt     Int      @default(80)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -101,7 +101,7 @@ model Alert {
   title      String
   message    String
   isRead     Boolean       @default(false)
-  entityType String? // "budget" | "transaction" | "recurring"
+  entityType String?
   entityId   String?
   createdAt  DateTime      @default(now())
 }
