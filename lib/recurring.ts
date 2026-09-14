@@ -40,9 +40,6 @@ export async function generateDueRecurringTransactions(asOf: Date = new Date()) 
 
   for (const item of due) {
     let cursor = item.nextRunDate;
-
-    // Catch up on every missed occurrence, not just the latest one, so a
-    // recurring bill that wasn't run for a while backfills correctly.
     while (cursor <= asOf && (!item.endDate || cursor <= item.endDate)) {
       const tx = await prisma.transaction.create({
         data: {
