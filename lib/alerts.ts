@@ -50,9 +50,6 @@ export async function refreshAlerts(now: Date = new Date()) {
       });
     }
   }
-
-  // Unusual spending: compare this month's spend per category against the
-  // trailing 3-month average; flag categories running >50% hot.
   const threeMonthsAgo = startOfMonth(subMonths(now, 3));
   const trailing = await prisma.transaction.groupBy({
     by: ['categoryId'],
@@ -76,9 +73,6 @@ export async function refreshAlerts(now: Date = new Date()) {
       });
     }
   }
-
-  // Avoid duplicate alerts: skip any whose title already has an unread
-  // entry created today.
   const existingToday = await prisma.alert.findMany({
     where: { createdAt: { gte: monthStart }, isRead: false },
   });
