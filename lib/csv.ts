@@ -5,7 +5,6 @@ export interface CsvColumnMapping {
   date: string;
   description: string;
   amount: string;
-  // Some banks split debits/credits into two columns instead of a signed amount.
   debit?: string;
   credit?: string;
 }
@@ -13,9 +12,9 @@ export interface CsvColumnMapping {
 export interface ParsedCsvRow {
   date: string;
   description: string;
-  amount: number; // positive
+  amount: number;
   type: 'INCOME' | 'EXPENSE';
-  fingerprint: string; // stable hash used to detect duplicate imports
+  fingerprint: string;
 }
 
 /** Parses raw CSV text into header + preview rows for the mapping step. */
@@ -87,7 +86,6 @@ export function applyMapping(raw: string, mapping: CsvColumnMapping): ParsedCsvR
 
 function normalizeDate(input: string): string {
   const trimmed = input.trim();
-  // Handle MM/DD/YYYY common in US bank exports in addition to ISO.
   const usMatch = trimmed.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
   if (usMatch) {
     const [, m, d, y] = usMatch;
