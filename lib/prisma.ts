@@ -1,7 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-
-// Reuse a single PrismaClient across hot-reloads in dev so we don't
-// exhaust the SQLite connection on every file change.
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
 export const prisma =
