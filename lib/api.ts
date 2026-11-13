@@ -1,16 +1,9 @@
-/**
- * Small fetch wrapper for the client: parses JSON, and turns non-2xx
- * responses (or non-JSON 500 pages) into a thrown Error with a readable
- * message. Without this, one failed request left pages stuck on "Loading…"
- * or crashed them with "Cannot read properties of undefined".
- */
 export async function api<T = any>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(url, init);
   let data: any = null;
   try {
     data = await res.json();
   } catch {
-    /* non-JSON body */
   }
   if (!res.ok) {
     throw new Error(
