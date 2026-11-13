@@ -13,8 +13,6 @@ export const GET = route(async (req: NextRequest) => {
   const rangeStart = startOfMonth(subMonths(now, months - 1));
   const rangeEnd = endOfMonth(now);
 
-  // One query for the whole range, bucketed per month in memory — instead of
-  // two aggregate queries per month (up to 48 round-trips to Neon).
   const txs = await prisma.transaction.findMany({
     where: { date: { gte: rangeStart, lte: rangeEnd } },
     select: { date: true, amount: true, type: true },
