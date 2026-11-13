@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #1c1d20;
+  --steel: #5a6068;
+  --accent: #ff5f00;
+  --ink: #f3f4f6;
+  color-scheme: dark;
+}
+
+* {
+  border-color: theme('colors.line');
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100%;
+}
+
+body {
+  font-family: theme('fontFamily.sans');
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ambient glow behind the glass. A fixed pseudo-element (instead of
+   background-attachment: fixed) so it also behaves on iOS Safari. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 90% -10%, rgba(255, 95, 0, 0.28), transparent 60%),
+    radial-gradient(50rem 40rem at -10% 110%, rgba(90, 96, 104, 0.45), transparent 60%),
+    radial-gradient(30rem 24rem at 55% 55%, rgba(255, 95, 0, 0.07), transparent 70%),
+    var(--paper);
+}
+
+.font-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: rgba(255, 95, 0, 0.45);
+  color: #ffffff;
+}
+
+@layer components {
+  /* Frosted-glass surfaces */
+  .glass {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.035));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: theme('boxShadow.glass');
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+  }
+  .glass-strong {
+    background: linear-gradient(145deg, rgba(60, 63, 69, 0.78), rgba(32, 33, 37, 0.82));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    backdrop-filter: blur(28px) saturate(160%);
+  }
+  .glass-subtle {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .glass-input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--ink);
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+  }
+  .glass-input::placeholder {
+    color: rgba(163, 169, 177, 0.7);
+  }
+  .glass-input:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  .glass-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow: 0 0 0 3px rgba(255, 95, 0, 0.22);
+  }
+}
+
+/* Browsers without backdrop-filter get a solid, still-readable surface. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-subtle {
+    background: rgba(38, 40, 44, 0.92);
+  }
+  .glass-strong {
+    background: rgba(32, 33, 37, 0.97);
+  }
+}
+
+/* Native dropdown lists can't be translucent, so keep them dark. */
+select option {
+  background: #26282c;
+  color: #f3f4f6;
+}
+input[type='date'] {
+  color-scheme: dark;
+}
+
+/* Hairline table rules, used throughout transaction lists */
+.ledger-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.ledger-row:last-child {
+  border-bottom: none;
+}
+
+/* Focus visibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Subtle scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(90, 96, 104, 0.7) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
