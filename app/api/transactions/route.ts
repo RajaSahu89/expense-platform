@@ -25,15 +25,12 @@ export const GET = route(async (req: NextRequest) => {
     where.date = {};
     if (from) where.date.gte = new Date(from);
     if (to) {
-      // Include the whole "to" day, not just its midnight.
       const end = new Date(to);
       end.setUTCHours(23, 59, 59, 999);
       where.date.lte = end;
     }
   }
   if (q) {
-    // Postgres `contains` is case-sensitive unless told otherwise (it was
-    // case-insensitive on SQLite, which is what this code was written for).
     where.OR = [
       { description: { contains: q, mode: 'insensitive' } },
       { merchant: { contains: q, mode: 'insensitive' } },
