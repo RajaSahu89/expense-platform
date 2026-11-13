@@ -36,8 +36,6 @@ export default function TransactionForm({
     categoryId: initial?.categoryId ?? (null as string | null),
     notes: initial?.notes ?? '',
   });
-  // Kept as a string: parsing to a number on every keystroke made it
-  // impossible to type "0.5" (the "0." collapsed back to an empty field).
   const [amount, setAmount] = useState(initial?.amount ? String(initial.amount) : '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
