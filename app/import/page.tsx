@@ -41,8 +41,6 @@ export default function ImportPage() {
       setHeaders(res.headers);
       setRows(res.rows);
       setTotalRows(res.totalRows);
-      // Best-effort guess at common bank export column names (Indian banks
-      // typically use Narration / Withdrawal Amt. / Deposit Amt.).
       const guess = (candidates: string[]) =>
         res.headers.find((h) => candidates.some((c) => h.toLowerCase().includes(c))) ?? '';
       const debit = guess(['debit', 'withdrawal']);
@@ -120,7 +118,7 @@ export default function ImportPage() {
               className="hidden"
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                e.target.value = ''; // lets you re-pick the same file after an error
+                e.target.value = '';
                 if (file) handleFile(file);
               }}
             />
