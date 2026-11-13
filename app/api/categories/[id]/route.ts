@@ -21,8 +21,6 @@ export const DELETE = route(async (_req: NextRequest, { params }: Ctx) => {
   if (category.isSystem) {
     return NextResponse.json({ error: 'System categories cannot be deleted' }, { status: 400 });
   }
-  // Transactions/recurring items become uncategorized (onDelete: SetNull) and
-  // the category's budget is removed (onDelete: Cascade) — see schema.prisma.
   await prisma.category.delete({ where: { id: params.id } });
   return NextResponse.json({ success: true });
 });
