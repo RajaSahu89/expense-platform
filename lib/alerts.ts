@@ -1,12 +1,5 @@
 import { prisma } from './prisma';
 import { startOfMonth, endOfMonth, subMonths } from 'date-fns';
-
-/**
- * Recomputes alerts for the current month: budget threshold breaches and
- * simple unusual-spending detection (a category running well above its
- * trailing 3-month average). Call this after any transaction mutation
- * (create/update/delete/import) or on a schedule.
- */
 export async function refreshAlerts(now: Date = new Date()) {
   const monthStart = startOfMonth(now);
   const monthEnd = endOfMonth(now);
@@ -43,8 +36,6 @@ export async function refreshAlerts(now: Date = new Date()) {
     } else if (pct >= budget.alertAt) {
       newAlerts.push({
         severity: 'WARNING',
-        // Stable title (no percentage) so the dedupe below works; the live
-        // percentage lives in the message instead.
         title: `${budget.category.name} budget nearing its limit`,
         message: `You've spent ₹${spent.toFixed(2)} of your ₹${budget.monthlyLimit.toFixed(2)} ${budget.category.name} budget (${pct.toFixed(0)}%).`,
         entityType: 'budget',
@@ -52,9 +43,6 @@ export async function refreshAlerts(now: Date = new Date()) {
       });
     }
   }
-
-  // Unusual spending: compare this month's spend per category against the
-  // trailing 3-month average; flag categories running >50% hot.
   const threeMonthsAgo = startOfMonth(subMonths(now, 3));
   const trailing = await prisma.transaction.groupBy({
     by: ['categoryId'],
@@ -78,10 +66,6 @@ export async function refreshAlerts(now: Date = new Date()) {
       });
     }
   }
-
-  // Avoid duplicate alerts: skip any whose title was already raised this
-  // month — read or unread. (Checking only unread alerts meant a dismissed
-  // alert came straight back on the next refresh.)
   const existingThisMonth = await prisma.alert.findMany({
     where: { createdAt: { gte: monthStart } },
     select: { title: true },
