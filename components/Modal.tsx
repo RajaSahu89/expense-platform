@@ -11,8 +11,6 @@ export default function Modal({
   children: ReactNode;
   onClose: () => void;
 }) {
-  // Keep the latest onClose in a ref so the effect below doesn't re-subscribe
-  // (and the body-scroll lock doesn't flicker) every time the parent re-renders.
   const closeRef = useRef(onClose);
   closeRef.current = onClose;
 
