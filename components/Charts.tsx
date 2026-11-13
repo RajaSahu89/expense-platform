@@ -24,8 +24,6 @@ const tooltipStyle = {
   color: '#F3F4F6',
   backdropFilter: 'blur(12px)',
 };
-
-// Compact axis labels: 85000 → ₹85k, 1200000 → ₹12L (Indian grouping).
 function compact(v: number) {
   const abs = Math.abs(v);
   if (abs >= 10_000_000) return `₹${+(v / 10_000_000).toFixed(1)}Cr`;
