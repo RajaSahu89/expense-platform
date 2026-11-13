@@ -1,16 +1,4 @@
 import { Category } from '@prisma/client';
-
-/**
- * Rule-based auto-categorization.
- *
- * Every Category carries a comma-separated `keywords` string (e.g.
- * "uber,lyft,transit"). We score each category by how many of its
- * keywords appear as whole words in the transaction's description/merchant text and
- * return the best match. This is intentionally simple (no ML) so it's
- * transparent and easy for a user to extend — a good v1 for a
- * portfolio project, with a clear seam to swap in a smarter classifier
- * later.
- */
 export function categorizeTransaction(
   text: string,
   categories: Pick<Category, 'id' | 'name' | 'keywords'>[]
@@ -26,7 +14,7 @@ export function categorizeTransaction(
 
     let score = 0;
     for (const keyword of keywords) {
-      if (matchesKeyword(normalized, keyword)) score += 1 + keyword.length / 100; // longer = more specific
+      if (matchesKeyword(normalized, keyword)) score += 1 + keyword.length / 100;
     }
 
     if (score > 0 && (!bestMatch || score > bestMatch.score)) {
@@ -36,16 +24,10 @@ export function categorizeTransaction(
 
   return bestMatch?.id ?? null;
 }
-
-/**
- * Whole-word match, so "ola" no longer matches "Kolkata" or "coca-cola" and
- * "more" no longer matches "moreover".
- */
 function matchesKeyword(text: string, keyword: string): boolean {
   const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return new RegExp(`(^|[^a-z0-9])${escaped}($|[^a-z0-9])`).test(text);
 }
-
 export const DEFAULT_CATEGORIES: Array<{
   name: string;
   color: string;
