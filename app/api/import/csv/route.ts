@@ -9,15 +9,6 @@ import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
 
-/**
- * Step 1 — preview: `{ mode: "preview", csv: string }`
- * Returns detected headers + a few sample rows so the user can map columns.
- *
- * Step 2 — commit: `{ mode: "commit", csv: string, mapping }`
- * Re-parses the full file, skips rows whose fingerprint already exists
- * (idempotent re-import), auto-categorizes, and inserts the rest tagged
- * with a shared `importBatch` id.
- */
 export const POST = route(async (req: NextRequest) => {
   const body = await req.json();
 
@@ -50,8 +41,6 @@ export const POST = route(async (req: NextRequest) => {
         { status: 400 }
       );
     }
-
-    // Dedupe against what's already stored (dedicated, unique `fingerprint` column).
     const existing = await prisma.transaction.findMany({
       where: { fingerprint: { in: rows.map((r) => r.fingerprint) } },
       select: { fingerprint: true },
@@ -79,7 +68,7 @@ export const POST = route(async (req: NextRequest) => {
           fingerprint: row.fingerprint,
           categoryId: categorizeTransaction(row.description, categories),
         })),
-        skipDuplicates: true, // safety net if two imports race each other
+        skipDuplicates: true,
       });
       imported += result.count;
     }
