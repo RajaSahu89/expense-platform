@@ -5,17 +5,14 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Brand palette: #1C1D20 (base), #5A6068 (steel), #FF5F00 (accent).
-        paper: '#1C1D20', // page background
-        panel: '#26282C', // solid fallback surface (dropdowns, tooltips)
-        steel: '#5A6068', // borders, tracks, neutral chips
-        accent: '#FF5F00', // primary actions, active nav, highlights
+        paper: '#1C1D20',
+        panel: '#26282C',
+        steel: '#5A6068',
+        accent: '#FF5F00',
         accentSoft: 'rgba(255, 95, 0, 0.16)',
-        ink: '#F3F4F6', // primary text
-        muted: '#A3A9B1', // secondary text (lightened steel for AA contrast on paper)
-        line: 'rgba(255, 255, 255, 0.10)', // hairline borders on glass
-        // Semantic colours for money. Kept apart from the orange accent so
-        // "good" and "bad" never get confused with "primary action".
+        ink: '#F3F4F6',
+        muted: '#A3A9B1',
+        line: 'rgba(255, 255, 255, 0.10)',
         success: '#5CD6A0',
         successSoft: 'rgba(92, 214, 160, 0.14)',
         danger: '#FF5470',
