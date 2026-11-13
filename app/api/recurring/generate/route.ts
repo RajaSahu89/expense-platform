@@ -11,13 +11,7 @@ async function run() {
   return NextResponse.json({ created: created.length });
 }
 
-/** "Run due now" button in the UI. Idempotent — see lib/recurring.ts. */
 export const POST = route(async () => run());
-
-/**
- * Daily schedule: Vercel Cron calls this route with GET (see vercel.json).
- * If CRON_SECRET is set, Vercel sends it as a bearer token and we require it.
- */
 export const GET = route(async (req: NextRequest) => {
   const secret = process.env.CRON_SECRET;
   if (secret && req.headers.get('authorization') !== `Bearer ${secret}`) {
