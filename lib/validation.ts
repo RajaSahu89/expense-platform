@@ -14,18 +14,12 @@ export const transactionSchema = z.object({
   categoryId: z.string().nullable().optional(),
   notes: z.string().max(1000).optional().nullable(),
 });
-
-// NOTE: no `.default()` below. These schemas are reused with `.partial()` for
-// PATCH requests, and a default would silently reset untouched fields
-// (e.g. editing a budget's limit used to reset its alert threshold to 80).
-// Database defaults in schema.prisma cover the create case.
 export const categorySchema = z.object({
   name: z.string().trim().min(1).max(50),
   color: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
   icon: z.string().min(1).max(30),
   keywords: z.string().max(500).optional(),
 });
-
 export const budgetSchema = z.object({
   categoryId: z.string().min(1),
   monthlyLimit: z.number().positive().finite(),
@@ -42,8 +36,6 @@ export const recurringSchema = z.object({
   startDate: dateString,
   endDate: dateString.nullable().optional(),
   notes: z.string().max(1000).optional().nullable(),
-  // Used by the pause / resume toggle. It was missing before, so Zod
-  // stripped it and pausing a recurring item silently did nothing.
   isActive: z.boolean().optional(),
 });
 
