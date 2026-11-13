@@ -9,7 +9,7 @@ const FALLBACK_COLOR = '#A3A9B1';
 
 export const GET = route(async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
-  const monthParam = searchParams.get('month'); // YYYY-MM
+  const monthParam = searchParams.get('month');
   let reference = new Date();
   if (monthParam) {
     if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(monthParam)) {
@@ -59,7 +59,7 @@ export const GET = route(async (req: NextRequest) => {
   const totalExpense = expense._sum.amount ?? 0;
 
   return NextResponse.json({
-    // Local-time YYYY-MM (toISOString would shift the month in timezones ahead of UTC).
+    
     month: `${monthStart.getFullYear()}-${String(monthStart.getMonth() + 1).padStart(2, '0')}`,
     totalIncome,
     totalExpense,
