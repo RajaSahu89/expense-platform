@@ -39,14 +39,12 @@ export default function TransactionsPage() {
       .then((r) => setCategories(r.categories))
       .catch((e) => setError(errorMessage(e)));
   }, []);
-
-  // Any filter change goes back to page 1.
   useEffect(() => {
     setPage(1);
   }, [search, categoryFilter, typeFilter]);
 
   useEffect(() => {
-    let cancelled = false; // ignore out-of-order responses while typing
+    let cancelled = false;
     const params = new URLSearchParams({ page: String(page), pageSize: String(PAGE_SIZE) });
     if (search) params.set('q', search);
     if (categoryFilter) params.set('categoryId', categoryFilter);
@@ -63,8 +61,7 @@ export default function TransactionsPage() {
         })
         .catch((e) => !cancelled && setError(errorMessage(e)))
         .finally(() => !cancelled && setLoading(false));
-    }, 250); // debounce search/filter changes
-
+    }, 250);
     return () => {
       cancelled = true;
       clearTimeout(t);
@@ -88,7 +85,6 @@ export default function TransactionsPage() {
     if (!confirm('Delete this transaction?')) return;
     try {
       await api(`/api/transactions/${id}`, { method: 'DELETE' });
-      // Deleting the last row on a page shouldn't strand you on an empty page.
       if (transactions.length === 1 && page > 1) setPage(page - 1);
       else reload();
     } catch (e) {
