@@ -48,7 +48,6 @@ export default function DashboardPage() {
     try {
       await api('/api/alerts', jsonInit('PATCH', { id }));
     } catch {
-      /* the optimistic update is harmless; it'll reappear on next load if it failed */
     }
   }, []);
 
